@@ -45,7 +45,8 @@ body {
   top: 4rem;
   left: 4rem;
   z-index: 9999;
-  animation: comeInLeft 1s ease-out;
+  animation: comeInLeft 1s ease-out 3s;
+  animation-fill-mode: backwards;
 }
 
 .logo img {
@@ -111,7 +112,8 @@ body {
   text-shadow: 1px 1px 1px #2a2524bc;
   letter-spacing: 0.8rem; /* 8px */
   font-weight: bold;
-  animation: comeInTop 1s ease-out;
+  animation: comeInTop 1s 1.7s ease-out;
+  animation-fill-mode: backwards;
 }
 
 .primary-heading {
@@ -197,6 +199,8 @@ body {
   text-shadow: none;
   transition: background-color 0.3s;
   width: 100%;
+  animation: comeIn 1s 1.8s ease;
+  animation-fill-mode: backwards;
 }
 
 .button:not(:last-child) {
@@ -393,22 +397,19 @@ body {
     transform: translate(0);
   }
 }
-@keyframes comeInRight {
+@keyframes comeIn {
   0% {
     opacity: 0;
-    transform: translateX(10rem);
   }
-  80% {
-    transform: translateX(-0.5rem);
-  }
+
   100% {
     opacity: 1;
-    transform: translate(0);
   }
 }
 
 .left-animated {
-  animation: comeInLeft 1s ease-out;
+  animation: comeInBottom 1s ease-out 1.3s;
+  animation-fill-mode: backwards;
 }
 
 .right-animated {
