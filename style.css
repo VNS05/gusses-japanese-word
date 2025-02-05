@@ -45,6 +45,7 @@ body {
   top: 4rem;
   left: 4rem;
   z-index: 9999;
+  animation: comeInLeft 1s ease-out;
 }
 
 .logo img {
@@ -110,6 +111,7 @@ body {
   text-shadow: 1px 1px 1px #2a2524bc;
   letter-spacing: 0.8rem; /* 8px */
   font-weight: bold;
+  animation: comeInTop 1s ease-out;
 }
 
 .primary-heading {
@@ -375,5 +377,68 @@ body {
   .container-btn .btn {
     padding: 1rem 2rem; /* Adjust button padding */
     font-size: 1.4rem; /* Smaller button font size */
+  }
+}
+
+@keyframes comeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-10rem);
+  }
+  80% {
+    transform: translateX(0.5rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
+}
+@keyframes comeInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(10rem);
+  }
+  80% {
+    transform: translateX(-0.5rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0);
+  }
+}
+
+.left-animated {
+  animation: comeInLeft 1s ease-out;
+}
+
+.right-animated {
+  animation: comeInRight 1s ease-out;
+}
+
+@keyframes comeInBottom {
+  0% {
+    opacity: 0;
+    transform: translateY(3rem);
+  }
+  80% {
+    transform: translateY(-0.5rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes comeInTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-3rem);
+  }
+  80% {
+    transform: translateY(0.5rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
