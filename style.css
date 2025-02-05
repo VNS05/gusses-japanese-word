@@ -199,7 +199,7 @@ body {
   text-shadow: none;
   transition: background-color 0.3s;
   width: 100%;
-  animation: comeIn 1s 1.8s ease;
+  animation: comeIn 1s 1s ease;
   animation-fill-mode: backwards;
 }
 
@@ -270,6 +270,8 @@ body {
   letter-spacing: 0.2rem;
   display: none;
   transition: color 0.3s ease; /* Smooth color transition */
+  animation: comeInBottom 1s ease-out 1.3s;
+  animation-fill-mode: backwards;
 }
 
 .shake {
