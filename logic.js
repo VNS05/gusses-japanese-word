@@ -1,6 +1,7 @@
 let currentSyllable = "";
 let correctWord = "";
 let gameMode = "easy"; // Default mode
+let animationPlayed = false;
 let fullWords = [
   "a",
   "i",
@@ -109,6 +110,8 @@ const scoreE = document.getElementById("score");
 const containerInput = document.getElementById("container__input");
 const resetGame = document.getElementById("reset-game");
 
+const checkButton = document.getElementById("check-button");
+
 // Function to select the game mode
 function selectMode(mode) {
   gameMode = mode;
@@ -147,18 +150,47 @@ function showRandomWord() {
   primaryHeading_1.style.display = "inline-block";
   primaryHeading_2.style.display = "inline-block";
   primaryHeading_2.innerText = currentSyllable;
+  primaryHeading_2.offsetHeight;
+
+  if (animationPlayed) {
+    resetAnimation(primaryHeading_2); // Reset animation for new word
+  } else {
+    resetAnimation(primaryHeading_2); // Call resetAnimation to play the animation
+    animationPlayed = true; // Set the flag to true after the first word
+  }
+
   userInput.value = ""; // Clear previous input
   result.innerText = ""; // Clear previous result
-}
-// Function to check the user's input
-function checkAnswer() {
-  const userInput = document
-    .getElementById("user-input")
-    .value.trim()
-    .toLowerCase();
-  const scoreE = document.getElementById("score"); // Ensure you have this reference
 
-  if (userInput === correctWord) {
+  resetAnimation(primaryHeading_2);
+}
+
+function resetAnimation(element) {
+  element.classList.remove("animate"); // Remove the animation class
+  void element.offsetWidth; // Trigger reflow
+  element.classList.add("animate"); // Re-add the animation class
+}
+
+// Function to check the user's input
+function checkAnswer(event) {
+  // Prevent the default action if the input is empty
+  if (userInput.value.trim() === "") {
+    userInput.value = "Please type a word"; // Show message in the input box
+    userInput.style.color = "red";
+    userInput.style.outline = "red"; // Optional: Change text color to red
+
+    // Clear the message after a short delay
+    setTimeout(() => {
+      userInput.value = ""; // Clear the input box
+      userInput.style.color = ""; // Reset text color
+    }, 2000); // Adjust the delay as needed
+
+    return; // Exit the function
+  }
+
+  const userInputValue = userInput.value.trim().toLowerCase();
+
+  if (userInputValue === correctWord) {
     score += 10; // Increase score by 10 points
     result.innerText = "You Win 😁! Correct word!";
     result.style.color = "#a6ff6e";
@@ -166,11 +198,13 @@ function checkAnswer() {
     // Add animation classes
     scoreE.classList.add("shake", "grow");
     result.classList.add("shake", "grow");
-
     setTimeout(showRandomWord, 2000); // Automatically show a new word after 2 seconds
   } else {
     score -= 10;
     result.innerText = "You Lost 🥺! Wrong word!";
+    setTimeout(() => {
+      result.innerText = "Try again ☺️";
+    }, 2000);
     result.style.color = "#ea8221";
   }
 
@@ -189,6 +223,22 @@ function checkAnswer() {
   }, 1000); // Match this duration with the animation duration
 }
 
+// Function to enable/disable the check button based on input
+function toggleCheckButton() {
+  if (userInput.value.trim() === "") {
+    checkButton.classList.add("disabled"); // Add a class to style it as disabled
+    checkButton.onclick = (event) => event.preventDefault(); // Prevent action
+  } else {
+    checkButton.classList.remove("disabled"); // Remove the disabled class
+    checkButton.onclick = checkAnswer; // Restore the original function
+  }
+}
+toggleCheckButton();
+// Add event listener to the input field
+userInput.addEventListener("input", toggleCheckButton);
+
+// Initial check to disable the button if the input is empty on page load
+
 // Function to reset the game
 function resetGameF() {
   score = 0; // Reset score
@@ -201,6 +251,7 @@ function resetGameF() {
   modeSelection.style.display = "block"; // Show mode selection again
   primaryHeading_1.style.display = "none";
   primaryHeading_2.style.display = "none";
+  animationPlayed = false;
 }
 
 // Event listener for the start game button

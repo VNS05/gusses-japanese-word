@@ -130,13 +130,16 @@ body {
 #primary-heading-output-1 {
   font-size: var(--font-size-small);
   display: none;
-  animation: comeInLeft 1s ease-out 1.5s;
+  animation: comeInLeft 1s ease-out 1s;
   animation-fill-mode: backwards;
 }
 
 #primary-heading-output-2 {
   font-size: var(--font-size-medium);
-  animation: comeInRight 1s ease-out 1.5s;
+}
+
+.animate {
+  animation: comeInRight 1s ease-out 1s;
   animation-fill-mode: backwards;
 }
 
@@ -170,7 +173,7 @@ body {
   text-align: center;
   font-weight: 600;
   width: 100%; /* Ensure input takes full width */
-  animation: comeInLeft 1s ease-out 1.5s;
+  animation: comeInLeft 1s ease-out 1s;
   animation-fill-mode: backwards;
 }
 
@@ -206,7 +209,7 @@ body {
   text-shadow: none;
   transition: background-color 0.3s;
   width: 100%;
-  animation: comeIn 1s ease-out 1.5s;
+  animation: comeIn 1s ease-out 1s;
   animation-fill-mode: backwards;
 }
 
@@ -277,7 +280,7 @@ body {
   letter-spacing: 0.2rem;
   display: none;
   transition: color 0.3s ease; /* Smooth color transition */
-  animation: comeInBottom 1s ease-out 1.5s;
+  animation: comeInBottom 1s ease-out 1s;
   animation-fill-mode: backwards;
 }
 
@@ -295,8 +298,6 @@ body {
   align-items: center;
   margin: 1rem; /* 10px */
   padding: 0.5em;
-  animation: comeInBottom 1s ease-out 1.5s;
-  animation-fill-mode: backwards;
 }
 
 .btn:link,
@@ -315,6 +316,8 @@ body {
   user-select: none;
   font-weight: 200;
   letter-spacing: 0.2rem; /* 2px */
+  animation: comeInBottom 1s ease-out 0.5s;
+  animation-fill-mode: backwards;
 }
 
 .container-btn .btn-1 {
@@ -431,7 +434,7 @@ body {
   }
 }
 
-.left-animated {
+.bottom-animated {
   animation: comeInBottom 1s ease-out 1.3s;
   animation-fill-mode: backwards;
 }
