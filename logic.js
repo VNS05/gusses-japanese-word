@@ -265,7 +265,11 @@ userInput.addEventListener("input", toggleCheckButton);
 // Function to reset the game
 function resetGameF() {
   score = 0; // Reset score
+  totalWord = 0;
+  totalCorrectWord = 0;
+  wrongWord = 0;
   scoreE.innerText = "Score: " + score; // Update score display
+  scoreItemsE.innerText = "Correct: " + totalCorrectWord;
   result.innerText = ""; // Clear result message
   containerInput.style.display = "none"; // Hide input box
   startGame.style.display = "none"; // Hide start game button
