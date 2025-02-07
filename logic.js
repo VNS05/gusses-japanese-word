@@ -268,6 +268,8 @@ function resetGameF() {
   totalWord = 0;
   totalCorrectWord = 0;
   wrongWord = 0;
+  scoreItemsE.style.color = "";
+  scoreE.style.color = "";
   scoreE.innerText = "Score: " + score; // Update score display
   scoreItemsE.innerText = "Correct: " + totalCorrectWord;
   result.innerText = ""; // Clear result message
