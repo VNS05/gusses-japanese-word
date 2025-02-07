@@ -139,8 +139,8 @@ body {
 }
 
 .animate {
-  animation: comeInRight 1s ease-out 1s;
-  animation-fill-mode: backwards;
+  animation: comeInRight 1s ease-out 1s !important;
+  animation-fill-mode: backwards !important;
 }
 
 .row {
@@ -173,8 +173,8 @@ body {
   text-align: center;
   font-weight: 600;
   width: 100%; /* Ensure input takes full width */
-  animation: comeInLeft 1s ease-out 1s;
-  animation-fill-mode: backwards;
+  animation: comeInLeft 1s ease-out 1s !important ;
+  animation-fill-mode: backwards !important;
 }
 
 #user-input:focus {
@@ -209,8 +209,8 @@ body {
   text-shadow: none;
   transition: background-color 0.3s;
   width: 100%;
-  animation: comeIn 1s ease-out 1s;
-  animation-fill-mode: backwards;
+  animation: comeInBottom 1s ease-out 1s !important;
+  animation-fill-mode: backwards !important;
 }
 
 .button:not(:last-child) {
@@ -272,7 +272,7 @@ body {
   }
 }
 
-#score {
+.score-class {
   color: var(--win-color);
   margin: 2rem 0; /* 20px */
   font-size: 1.5rem;
@@ -284,12 +284,19 @@ body {
   animation-fill-mode: backwards;
 }
 
+#score-item {
+  font-size: 1rem;
+  letter-spacing: 0.3rem;
+  margin-top: 0 !important;
+  color: #f317f3;
+}
+
 .shake {
-  animation: shake 0.5s ease; /* Apply shake animation */
+  animation: shake 0.5s ease !important; /* Apply shake animation */
 }
 
 .grow {
-  animation: grow 0.5s ease; /* Apply grow animation */
+  animation: grow 0.5s ease !important; /* Apply grow animation */
 }
 
 .container-btn {
@@ -316,8 +323,8 @@ body {
   user-select: none;
   font-weight: 200;
   letter-spacing: 0.2rem; /* 2px */
-  animation: comeInBottom 1s ease-out 0.5s;
-  animation-fill-mode: backwards;
+  animation: comeInBottom 1s ease-out 0.5s !important;
+  animation-fill-mode: backwards !important;
 }
 
 .container-btn .btn-1 {

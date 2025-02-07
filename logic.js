@@ -99,6 +99,9 @@ let words = [
   "ん",
 ];
 let score = 0; // Initialize score
+let totalWord = 0;
+let totalCorrectWord = 0;
+let wrongWord = 0;
 
 const modeSelection = document.getElementById("mode-selection");
 const startGame = document.getElementById("start-game");
@@ -107,6 +110,7 @@ const primaryHeading_2 = document.getElementById("primary-heading-output-2");
 const userInput = document.getElementById("user-input");
 const result = document.getElementById("result");
 const scoreE = document.getElementById("score");
+const scoreItemsE = document.getElementById("score-item");
 const containerInput = document.getElementById("container__input");
 const resetGame = document.getElementById("reset-game");
 
@@ -118,6 +122,19 @@ function selectMode(mode) {
   modeSelection.style.display = "none"; // Hide mode selection
   startGame.style.display = "inline-block"; // Show start game button
 }
+
+// Event listener for the start game button
+document.getElementById("start-game").addEventListener("click", function () {
+  const selectedLength = parseInt(document.getElementById("length").value);
+  words = words.slice(0, selectedLength); // Adjust words array based on selected length
+  fullWords = fullWords.slice(0, selectedLength); // Adjust fullWords array based on selected length
+  showRandomWord(); // Start the game
+  containerInput.style.display = "flex";
+  scoreE.style.display = "block";
+  scoreItemsE.style.display = "block";
+  resetGame.style.display = "inline-block";
+  startGame.innerText = "new word"; // Show reset button
+});
 
 // Function to show a random syllable and enable the input box
 let previousIndex = -1; // To track the last shown word index
@@ -176,8 +193,7 @@ function checkAnswer(event) {
   // Prevent the default action if the input is empty
   if (userInput.value.trim() === "") {
     userInput.value = "Please type a word"; // Show message in the input box
-    userInput.style.color = "red";
-    userInput.style.outline = "red"; // Optional: Change text color to red
+    userInput.style.color = "red"; // Optional: Change text color to red
 
     // Clear the message after a short delay
     setTimeout(() => {
@@ -189,26 +205,34 @@ function checkAnswer(event) {
   }
 
   const userInputValue = userInput.value.trim().toLowerCase();
-
+  totalWord += 1;
   if (userInputValue === correctWord) {
     score += 10; // Increase score by 10 points
+    totalCorrectWord += 1;
     result.innerText = "You Win 😁! Correct word!";
     result.style.color = "#a6ff6e";
-
-    // Add animation classes
+    result.classList.add("shake", "grow"); //add animation class
     scoreE.classList.add("shake", "grow");
-    result.classList.add("shake", "grow");
     setTimeout(showRandomWord, 2000); // Automatically show a new word after 2 seconds
   } else {
     score -= 10;
+    wrongWord += 1;
     result.innerText = "You Lost 🥺! Wrong word!";
     setTimeout(() => {
       result.innerText = "Try again ☺️";
     }, 2000);
     result.style.color = "#ea8221";
   }
+  if (wrongWord > totalCorrectWord) {
+    scoreItemsE.style.color = "red";
+    scoreItemsE.classList.add("shake", "grow");
+  } else {
+    scoreItemsE.style.color = "";
+  }
 
   scoreE.innerText = "Score: " + score; // Update score display
+  scoreItemsE.innerText =
+    "Correct: " + totalCorrectWord + "/" + totalWord + "  ;Wrong:" + wrongWord; // Update score-item display
 
   if (score === -100) {
     scoreE.style.color = "red";
@@ -220,7 +244,8 @@ function checkAnswer(event) {
   setTimeout(() => {
     scoreE.classList.remove("shake", "grow");
     result.classList.remove("shake", "grow");
-  }, 1000); // Match this duration with the animation duration
+    scoreItemsE.classList.remove("shake", "grow");
+  }, 10000); // Match this duration with the animation duration
 }
 
 // Function to enable/disable the check button based on input
@@ -237,8 +262,6 @@ toggleCheckButton();
 // Add event listener to the input field
 userInput.addEventListener("input", toggleCheckButton);
 
-// Initial check to disable the button if the input is empty on page load
-
 // Function to reset the game
 function resetGameF() {
   score = 0; // Reset score
@@ -253,18 +276,6 @@ function resetGameF() {
   primaryHeading_2.style.display = "none";
   animationPlayed = false;
 }
-
-// Event listener for the start game button
-document.getElementById("start-game").addEventListener("click", function () {
-  const selectedLength = parseInt(document.getElementById("length").value);
-  words = words.slice(0, selectedLength); // Adjust words array based on selected length
-  fullWords = fullWords.slice(0, selectedLength); // Adjust fullWords array based on selected length
-  showRandomWord(); // Start the game
-  containerInput.style.display = "flex";
-  scoreE.style.display = "block";
-  resetGame.style.display = "inline-block";
-  startGame.innerText = "new word"; // Show reset button
-});
 
 // Allow the user to generate a new random word when the Meta key is pressed
 document.addEventListener("keydown", function (event) {
