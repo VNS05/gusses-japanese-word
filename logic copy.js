@@ -1,17 +1,8 @@
-// Game Variables
 let currentSyllable = "";
 let correctWord = "";
-let newWords = [];
-let newFullWords = [];
 let gameMode = "easy"; // Default mode
 let animationPlayed = false;
-let score = 0; // Initialize score
-let totalWord = 0;
-let totalCorrectWord = 0;
-let wrongWord = 0;
-
-// Word Lists
-const fullWords = [
+let fullWords = [
   "a",
   "i",
   "u",
@@ -59,8 +50,7 @@ const fullWords = [
   "wo",
   "n",
 ];
-
-const words = [
+let words = [
   "あ",
   "い",
   "う",
@@ -108,8 +98,11 @@ const words = [
   "を",
   "ん",
 ];
+let score = 0; // Initialize score
+let totalWord = 0;
+let totalCorrectWord = 0;
+let wrongWord = 0;
 
-// DOM Elements
 const modeSelection = document.getElementById("mode-selection");
 const startGame = document.getElementById("start-game");
 const primaryHeading_1 = document.getElementById("primary-heading-output-1");
@@ -120,50 +113,8 @@ const scoreE = document.getElementById("score");
 const scoreItemsE = document.getElementById("score-item");
 const containerInput = document.getElementById("container__input");
 const resetGame = document.getElementById("reset-game");
+
 const checkButton = document.getElementById("check-button");
-const lengthSelector = document.getElementById("length");
-updateWordLists(0, 5);
-// Function to update word lists based on selected range
-function updateWordLists(start, end) {
-  // Ensure the start and end values are within the bounds of the original arrays
-  if (start < 0 || end > fullWords.length || start >= end) {
-    console.error("Invalid range for word selection.");
-    return;
-  }
-
-  // Create new arrays based on the selected range
-  newWords = words.slice(start, end);
-  newFullWords = fullWords.slice(start, end);
-  console.log(newFullWords);
-  console.log(newWords);
-
-  console.log("Updated words length:", newWords.length);
-  scoreE.innerText = "Updated words length: " + newWords.length;
-  scoreE.style.color = "red";
-  setTimeout(() => {
-    updateScoreDisplay();
-    scoreE.style.color = "";
-  }, 2000);
-}
-
-// Event listener for length selection
-lengthSelector.addEventListener("change", function () {
-  const selectedValue = this.value; // Get the selected value
-  let selectedStartLength, selectedEndLength;
-
-  if (selectedValue.includes("-")) {
-    // If the selected value is a range (e.g., "6-10")
-    [selectedStartLength, selectedEndLength] = selectedValue
-      .split("-")
-      .map(Number); // Get the start and end lengths
-  } else {
-    // If the selected value is a single number (e.g., "5")
-    selectedStartLength = 0; // Start from index 0
-    selectedEndLength = parseInt(selectedValue); // Set end to the selected value
-  }
-
-  updateWordLists(selectedStartLength, selectedEndLength); // Update the word lists
-});
 
 // Function to select the game mode
 function selectMode(mode) {
@@ -172,95 +123,63 @@ function selectMode(mode) {
   startGame.style.display = "inline-block"; // Show start game button
 }
 
-// Function to show a random syllable and enable the input box
-
-//
-//
-class UniqueRandomIndexGenerator {
-  constructor(arr) {
-    this.originalArray = arr;
-    this.shuffledIndices = [];
-    this.currentIndex = 0;
-    this.shuffle(); // Shuffle the indices on initialization
-  }
-
-  shuffle() {
-    // Create an array of indices
-    this.shuffledIndices = Array.from(Array(this.originalArray.length).keys());
-    for (let i = this.shuffledIndices.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [this.shuffledIndices[i], this.shuffledIndices[j]] = [
-        this.shuffledIndices[j],
-        this.shuffledIndices[i],
-      ]; // Swap elements
-    }
-    this.currentIndex = 0; // Reset index after shuffling
-  }
-
-  getNextUniqueIndex() {
-    if (this.currentIndex < this.shuffledIndices.length) {
-      return this.shuffledIndices[this.currentIndex++]; // Return the next index and increment index
-    } else {
-      return null; // Return null if all indices have been used
-    }
-  }
-
-  reset() {
-    this.shuffle(); // Reshuffle the indices and reset the index
-  }
-}
-let isGenerating = false;
-//
-//
-// Event listener for the start game button and select word length
-startGame.addEventListener("click", function () {
-  if (isGenerating) return; // Prevent multiple clicks
-  isGenerating = true;
-
+// Event listener for the start game button
+document.getElementById("start-game").addEventListener("click", function () {
+  const selectedLength = parseInt(document.getElementById("length").value);
+  words = words.slice(0, selectedLength); // Adjust words array based on selected length
+  fullWords = fullWords.slice(0, selectedLength); // Adjust fullWords array based on selected length
   showRandomWord(); // Start the game
   containerInput.style.display = "flex";
   scoreE.style.display = "block";
   scoreItemsE.style.display = "block";
   resetGame.style.display = "inline-block";
-  startGame.innerText = "New Word"; // Show reset button
-  setTimeout(() => {
-    isGenerating = false;
-  }, 10000);
+  startGame.innerText = "new word"; // Show reset button
 });
-const randomIndexObject = new UniqueRandomIndexGenerator(newWords);
+
+// Function to show a random syllable and enable the input box
+let previousIndex = -1; // To track the last shown word index
+
 function showRandomWord() {
-  if (newWords.length === 0 || newFullWords.length === 0) {
+  if (words.length === 0 || fullWords.length === 0) {
     console.error(
       "Word lists are empty. Please add words before starting the game."
     );
     return; // Exit if there are no words to show
   }
-  let randomIndex = randomIndexObject.getNextUniqueIndex(); // Get the next unique index
-  // Check if all indices have been used
-  if (randomIndex === null) {
-    // Reset the generator if all words have been used
-    randomIndexObject.reset();
-    randomIndex = randomIndexObject.getNextUniqueIndex(); // Get the first index after reset
-  }
-  console.log(randomIndex);
+
+  let randomIndex;
+  do {
+    randomIndex = Math.floor(Math.random() * words.length);
+  } while (randomIndex === previousIndex); // Ensure the same word is not shown consecutively
+
+  previousIndex = randomIndex;
 
   // Set the current syllable and correct word based on the game mode
   if (gameMode === "hard") {
-    currentSyllable = newFullWords[randomIndex];
-    correctWord = newWords[randomIndex];
+    currentSyllable = fullWords[randomIndex];
+    correctWord = words[randomIndex];
   } else {
-    currentSyllable = newWords[randomIndex];
-    correctWord = newFullWords[randomIndex];
+    currentSyllable = words[randomIndex];
+    correctWord = fullWords[randomIndex];
   }
 
   // Update the UI
   primaryHeading_1.style.display = "inline-block";
   primaryHeading_2.style.display = "inline-block";
   primaryHeading_2.innerText = currentSyllable;
-  resetAnimation(primaryHeading_2);
+  primaryHeading_2.offsetHeight;
+
+  if (animationPlayed) {
+    resetAnimation(primaryHeading_2); // Reset animation for new word
+  } else {
+    resetAnimation(primaryHeading_2); // Call resetAnimation to play the animation
+    animationPlayed = true; // Set the flag to true after the first word
+  }
 
   userInput.value = ""; // Clear previous input
   result.innerText = ""; // Clear previous result
+
+  resetAnimation(primaryHeading_2);
 }
 
 function resetAnimation(element) {
@@ -271,19 +190,29 @@ function resetAnimation(element) {
 
 // Function to check the user's input
 function checkAnswer(event) {
+  // Prevent the default action if the input is empty
   if (userInput.value.trim() === "") {
-    showInputError("Please type a word");
+    userInput.value = "Please type a word"; // Show message in the input box
+    userInput.style.color = "red"; // Optional: Change text color to red
+
+    // Clear the message after a short delay
+    setTimeout(() => {
+      userInput.value = ""; // Clear the input box
+      userInput.style.color = ""; // Reset text color
+    }, 2000); // Adjust the delay as needed
+
     return; // Exit the function
   }
 
   const userInputValue = userInput.value.trim().toLowerCase();
   totalWord += 1;
-
   if (userInputValue === correctWord) {
     score += 10; // Increase score by 10 points
     totalCorrectWord += 1;
     result.innerText = "You Win 😁! Correct word!";
     result.style.color = "#a6ff6e";
+    result.classList.add("shake", "grow"); //add animation class
+    scoreE.classList.add("shake", "grow");
     setTimeout(showRandomWord, 2000); // Automatically show a new word after 2 seconds
   } else {
     score -= 10;
@@ -294,30 +223,29 @@ function checkAnswer(event) {
     }, 2000);
     result.style.color = "#ea8221";
   }
+  if (wrongWord > totalCorrectWord) {
+    scoreItemsE.style.color = "red";
+    scoreItemsE.classList.add("shake", "grow");
+  } else {
+    scoreItemsE.style.color = "";
+  }
 
-  updateScoreDisplay();
+  scoreE.innerText = "Score: " + score; // Update score display
+  scoreItemsE.innerText =
+    "Correct: " + totalCorrectWord + "/" + totalWord + "  ;Wrong:" + wrongWord; // Update score-item display
 
-  if (score <= -100) {
+  if (score === -100) {
     scoreE.style.color = "red";
     scoreE.innerText = "Too low score, 💀😭 ";
     setTimeout(resetGameF, 3000);
   }
-}
 
-// Function to show input error
-function showInputError(message) {
-  userInput.value = message; // Show message in the input box
-  userInput.style.color = "red"; // Change text color to red
+  // Remove animation classes after animation ends
   setTimeout(() => {
-    userInput.value = ""; // Clear the input box
-    userInput.style.color = ""; // Reset text color
-  }, 2000); // Adjust the delay as needed
-}
-
-// Function to update score display
-function updateScoreDisplay() {
-  scoreE.innerText = "Score: " + score; // Update score display
-  scoreItemsE.innerText = `Correct: ${totalCorrectWord}/${totalWord} ; Wrong: ${wrongWord}`; // Update score-item display
+    scoreE.classList.remove("shake", "grow");
+    result.classList.remove("shake", "grow");
+    scoreItemsE.classList.remove("shake", "grow");
+  }, 10000); // Match this duration with the animation duration
 }
 
 // Function to enable/disable the check button based on input
@@ -330,7 +258,7 @@ function toggleCheckButton() {
     checkButton.onclick = checkAnswer; // Restore the original function
   }
 }
-
+toggleCheckButton();
 // Add event listener to the input field
 userInput.addEventListener("input", toggleCheckButton);
 
@@ -361,7 +289,6 @@ document.addEventListener("keydown", function (event) {
     showRandomWord(); // Generate a new random word
   }
 });
-
 // Function to check if Enter key is pressed
 function checkEnter(event) {
   if (event.key === "Enter") {
@@ -369,7 +296,7 @@ function checkEnter(event) {
   }
 }
 
-// Initialize the game by hiding the input and reset button
+// Initialize the game by showing the length selection and hiding the input
 document.addEventListener("DOMContentLoaded", function () {
   containerInput.style.display = "none"; // Hide input initially
   startGame.style.display = "none"; // Hide start game button initially
