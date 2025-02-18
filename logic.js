@@ -124,6 +124,39 @@ const checkButton = document.getElementById("check-button");
 const lengthSelector = document.getElementById("length");
 let randomIndexObject = null;
 
+class UniqueRandomIndexGenerator {
+  constructor(arr) {
+    this.originalArray = arr;
+    this.shuffledIndices = [];
+    this.currentIndex = 0;
+    this.shuffle(); // Shuffle the indices on initialization
+  }
+
+  shuffle() {
+    // Create an array of indices
+    this.shuffledIndices = Array.from(Array(this.originalArray.length).keys());
+    for (let i = this.shuffledIndices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.shuffledIndices[i], this.shuffledIndices[j]] = [
+        this.shuffledIndices[j],
+        this.shuffledIndices[i],
+      ]; // Swap elements
+    }
+    this.currentIndex = 0; // Reset index after shuffling
+  }
+
+  getNextUniqueIndex() {
+    if (this.currentIndex < this.shuffledIndices.length) {
+      return this.shuffledIndices[this.currentIndex++]; // Return the next index and increment index
+    } else {
+      return null; // Return null if all indices have been used
+    }
+  }
+
+  reset() {
+    this.shuffle(); // Reshuffle the indices and reset the index
+  }
+}
 // Function to update word lists based on selected range
 function updateWordLists(start, end) {
   // Ensure the start and end values are within the bounds of the original arrays
@@ -147,7 +180,7 @@ function updateWordLists(start, end) {
   }, 2000);
 
   // 🛑 Reset and reinitialize the random index generator
-  //randomIndexObject = new UniqueRandomIndexGenerator(newWords);
+  randomIndexObject = new UniqueRandomIndexGenerator(newWords);
 }
 updateWordLists(0, 5);
 
@@ -182,39 +215,6 @@ function selectMode(mode) {
 
 //
 //
-class UniqueRandomIndexGenerator {
-  constructor(arr) {
-    this.originalArray = arr;
-    this.shuffledIndices = [];
-    this.currentIndex = 0;
-    this.shuffle(); // Shuffle the indices on initialization
-  }
-
-  shuffle() {
-    // Create an array of indices
-    this.shuffledIndices = Array.from(Array(this.originalArray.length).keys());
-    for (let i = this.shuffledIndices.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [this.shuffledIndices[i], this.shuffledIndices[j]] = [
-        this.shuffledIndices[j],
-        this.shuffledIndices[i],
-      ]; // Swap elements
-    }
-    this.currentIndex = 0; // Reset index after shuffling
-  }
-
-  getNextUniqueIndex() {
-    if (this.currentIndex < this.shuffledIndices.length) {
-      return this.shuffledIndices[this.currentIndex++]; // Return the next index and increment index
-    } else {
-      return null; // Return null if all indices have been used
-    }
-  }
-
-  reset() {
-    this.shuffle(); // Reshuffle the indices and reset the index
-  }
-}
 let isGenerating = false;
 //
 //
