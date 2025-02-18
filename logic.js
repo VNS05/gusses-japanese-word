@@ -122,7 +122,8 @@ const containerInput = document.getElementById("container__input");
 const resetGame = document.getElementById("reset-game");
 const checkButton = document.getElementById("check-button");
 const lengthSelector = document.getElementById("length");
-updateWordLists(0, 5);
+let randomIndexObject = null;
+
 // Function to update word lists based on selected range
 function updateWordLists(start, end) {
   // Ensure the start and end values are within the bounds of the original arrays
@@ -134,17 +135,21 @@ function updateWordLists(start, end) {
   // Create new arrays based on the selected range
   newWords = words.slice(start, end);
   newFullWords = fullWords.slice(start, end);
-  console.log(newFullWords);
-  console.log(newWords);
 
+  console.log("Updated word lists:", newFullWords, newWords);
   console.log("Updated words length:", newWords.length);
+
   scoreE.innerText = "Updated words length: " + newWords.length;
   scoreE.style.color = "red";
   setTimeout(() => {
     updateScoreDisplay();
     scoreE.style.color = "";
   }, 2000);
+
+  // 🛑 Reset and reinitialize the random index generator
+  //randomIndexObject = new UniqueRandomIndexGenerator(newWords);
 }
+updateWordLists(0, 5);
 
 // Event listener for length selection
 lengthSelector.addEventListener("change", function () {
@@ -161,7 +166,8 @@ lengthSelector.addEventListener("change", function () {
     selectedStartLength = 0; // Start from index 0
     selectedEndLength = parseInt(selectedValue); // Set end to the selected value
   }
-
+  console.log("sel" + selectedStartLength);
+  console.log("selE" + selectedEndLength);
   updateWordLists(selectedStartLength, selectedEndLength); // Update the word lists
 });
 
@@ -227,22 +233,32 @@ startGame.addEventListener("click", function () {
     isGenerating = false;
   }, 10000);
 });
-const randomIndexObject = new UniqueRandomIndexGenerator(newWords);
+randomIndexObject = new UniqueRandomIndexGenerator(newWords);
 function showRandomWord() {
   if (newWords.length === 0 || newFullWords.length === 0) {
     console.error(
       "Word lists are empty. Please add words before starting the game."
     );
-    return; // Exit if there are no words to show
+    return;
   }
-  let randomIndex = randomIndexObject.getNextUniqueIndex(); // Get the next unique index
-  // Check if all indices have been used
+
+  if (
+    !randomIndexObject ||
+    newWords.length !== randomIndexObject.originalArray.length
+  ) {
+    console.warn("Random index generator is outdated. Reinitializing...");
+    randomIndexObject = new UniqueRandomIndexGenerator(newWords);
+  }
+
+  let randomIndex = randomIndexObject.getNextUniqueIndex();
+
+  // If all indices have been used, reset
   if (randomIndex === null) {
-    // Reset the generator if all words have been used
     randomIndexObject.reset();
-    randomIndex = randomIndexObject.getNextUniqueIndex(); // Get the first index after reset
+    randomIndex = randomIndexObject.getNextUniqueIndex();
   }
-  console.log(randomIndex);
+
+  console.log("Random Index:", randomIndex);
 
   // Set the current syllable and correct word based on the game mode
   if (gameMode === "hard") {
@@ -253,14 +269,14 @@ function showRandomWord() {
     correctWord = newFullWords[randomIndex];
   }
 
-  // Update the UI
+  // Update UI
   primaryHeading_1.style.display = "inline-block";
   primaryHeading_2.style.display = "inline-block";
   primaryHeading_2.innerText = currentSyllable;
   resetAnimation(primaryHeading_2);
 
-  userInput.value = ""; // Clear previous input
-  result.innerText = ""; // Clear previous result
+  userInput.value = ""; // Clear input
+  result.innerText = ""; // Clear result message
 }
 
 function resetAnimation(element) {
